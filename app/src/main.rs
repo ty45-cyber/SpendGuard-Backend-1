@@ -45,9 +45,13 @@ let app = Router::new()
     .layer(cors)
     .layer(TraceLayer::new_for_http())
     .with_state(state);
-    let addr = std::env::var("LISTEN_ADDR").unwrap_or_else(|_| "0.0.0.0:3001".to_string());
-    let listener = tokio::net::TcpListener::bind(&addr).await?;
-    tracing::info!("SpendGuard listening on {addr}");
+    let port = std::env::var("PORT")
+    .unwrap_or_else(|_| "3001".to_string());
+
+let addr = format!("0.0.0.0:{port}");
+
+let listener = tokio::net::TcpListener::bind(&addr).await?;
+tracing::info!("SpendGuard listening on {addr}");
     axum::serve(listener, app).await?;
     Ok(())
 }
